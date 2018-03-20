@@ -1,0 +1,20 @@
+- name: Setup the softwares
+  hosts: all
+  #become_user: root
+  #become_method: sudo
+  become: true
+  gather_facts: true
+
+  #vars:
+  #  # Possible values: (dev|qa|stg|prod) 
+  #  edgemicro_env: prod
+
+
+  roles:
+    - { role: docker, tags: docker }
+    - { role: jenkins, tags: jenkins }
+    - { role: gitlab, tags: gitlab }
+    - { role: artifactory, tags: artifactory }
+    - { role: docker-registry, tags: docker-registry }
+    - { role: openjdk, tags: openjdk }
+    - { role: tomcat, tags: tomcat }

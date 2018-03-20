@@ -1,0 +1,28 @@
+external_url "http://{{ gitlab_site }}:{{ gitlab_http_port }}"
+
+gitlab_rails['lfs_enabled'] = true
+
+gitlab_rails['gitlab_shell_ssh_port'] = '{{ gitlab_ssh_port }}'
+
+
+nginx['listen_port'] = 80
+nginx['listen_https'] = true
+nginx['proxy_set_headers'] = {
+  "X-Forward-Port" => "{{ gitlab_http_port }}", 
+  "Host" => "{{ gitlab_site }}:{{ gitlab_http_port }}",
+  "X-Forwarded-Proto" => "http",
+  "X-Forwarded-Ssl" => "off"
+}
+nginx['listen_https'] = nil
+#nginx['redirect_http_to_https'] = false
+#gitlab_rails['smtp_enable'] = false
+#gitlab_rails['smtp_address'] = " {{ gitlab_smtp_server }}"
+#gitlab_rails['smtp_port'] = 587
+#gitlab_rails['smtp_user_name'] = "{{ gitlab_smtp_user }}"
+#gitlab_rails['smtp_password'] = "{{ gitlab_smtp_password }}"
+#gitlab_rails['smtp_domain'] = "{{ gitlab_smtp_domain }}"
+#gitlab_rails['smtp_authentication'] = "login"
+#gitlab_rails['smtp_enable_starttls_auto'] = true
+#gitlab_rails['smtp_openssl_verify_mode'] = 'peer'
+#gitlab_rails['gitlab_email_from'] = "{{ gitlab_smtp_user }}"
+#gitlab_rails['gitlab_email_reply_to'] = "{{ gitlab_smtp_user }}"

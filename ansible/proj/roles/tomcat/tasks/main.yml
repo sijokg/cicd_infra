@@ -1,0 +1,6 @@
+- name: Tag and push tomcat image to a private repo
+  docker_image:
+    name: tomcat:8.5
+    repository: 10.0.64.4:5000/tomcat
+    tag: 8.5
+    push: yes

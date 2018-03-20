@@ -1,0 +1,3 @@
+managed_volume_dir: "/var/opt/jfrog/artifactory"
+artifactory_image: "docker.bintray.io/jfrog/artifactory-oss:latest"
+artifactory_http_port: "8081"

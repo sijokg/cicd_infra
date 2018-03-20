@@ -1,0 +1,24 @@
+- name: Directories for data persistence
+  file: path={{ item }} recurse=yes state=directory
+  with_items:
+    - "{{ managed_volume_dir }}"
+
+- name: Install Artifactory container
+  docker_container:
+    name: artifactory-container
+    image: "{{ artifactory_image }}"
+    state: started
+    ports:
+      - "{{ artifactory_http_port }}:8081"
+    volumes:
+      - "{{ managed_volume_dir }}"
+    restart_policy: always
+
+- name: Copy systemd service script to start and stop the  artifactory-container
+  copy: src=files/docker-artifactory.service dest=/etc/systemd/system
+
+- name: Reload systemctl
+  shell: systemctl reload-or-restart docker-artifactory
+
+- name: Enable the docker-artifactory service
+  shell: systemctl enable docker-artifactory

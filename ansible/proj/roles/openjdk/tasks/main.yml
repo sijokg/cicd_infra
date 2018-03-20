@@ -1,0 +1,6 @@
+- name: Tag and push openjdk java image to a private repo
+  docker_image:
+    name: openjdk:8
+    repository: 10.0.64.4:5000/openjdk
+    tag: 8
+    push: yes

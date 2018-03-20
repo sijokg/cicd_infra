@@ -1,0 +1,3 @@
+data_dir: "/srv/registry"
+registry_image: "registry:2"
+registry_http_port: "5000"

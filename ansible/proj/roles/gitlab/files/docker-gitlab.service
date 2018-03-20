@@ -1,0 +1,12 @@
+[Unit]
+Description=Gitlab in a Docker container
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker start -a gitlab-container
+ExecStop=/usr/bin/docker stop -t 2 gitlab-container
+
+[Install]
+WantedBy=default.target

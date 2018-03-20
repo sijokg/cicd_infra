@@ -1,0 +1,44 @@
+- name: Ensure jenkins directory on docker host
+  file:
+    state: directory
+    owner: 1000
+    group: 1000
+    path: /share/jenkins
+
+- name: upload the site directory to the docker host
+  synchronize: src=site dest=/tmp
+
+- name: Build the image and push it to a private repo
+  docker_image:
+    path: /tmp/site
+    name: 10.0.64.4:5000/jenkins
+    tag: 1.0
+    state: build
+    push: yes
+
+- name: start the container
+  docker_container:
+    name: jenkins-container
+    #image: jenkins/jenkins
+    image: 10.0.64.4:5000/jenkins:1.0
+    ports: 
+     - 8080:8080
+     - 50000:50000
+    volumes:
+     - "/share/jenkins:/var/jenkins_home"
+     - "/var/run/docker.sock:/var/run/docker.sock"
+     #- '$(which docker):$(which docker)'
+     - "/usr/bin/docker:/usr/bin/docker"
+    env:
+      JAVA_OPTS: "-Xms128m -Xmx256m"
+    state: started
+    recreate: no
+
+- name: Copy systemd service script to start and stop the jenkins container
+  copy: src=files/docker-jenkins.service dest=/etc/systemd/system
+
+- name: Reload systemctl
+  shell: systemctl reload-or-restart docker-jenkins
+
+- name: Enable the docker-jenkins service
+  shell: systemctl enable docker-jenkins

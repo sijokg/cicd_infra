@@ -1,0 +1,24 @@
+- name: Directories for data persistence
+  file: path={{ item }} recurse=yes state=directory
+  with_items:
+    - "{{ data_dir }}"
+
+- name: Install Registry software
+  docker_container:
+    name: registry-container
+    image: "{{ registry_image }}"
+    state: started
+    ports:
+      - "{{ registry_http_port }}:5000"
+    volumes:
+      - "{{ data_dir }}:/var/lib/registry"
+    restart_policy: always
+
+- name: Copy systemd service script to start and stop the  registry-container
+  copy: src=files/docker-registry.service dest=/etc/systemd/system
+
+- name: Reload systemctl
+  shell: systemctl reload-or-restart docker-registry
+
+- name: Enable the docker-registry service
+  shell: systemctl enable docker-registry
